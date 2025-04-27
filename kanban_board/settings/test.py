@@ -1,15 +1,13 @@
-from . import base
+from .base import *  # noqa
 
 DEBUG = True
 
-INSTALLED_APPS = base.INSTALLED_APPS + [
+INSTALLED_APPS += [  # noqa: F405
     "debug_toolbar",
 ]
 
-MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + base.MIDDLEWARE
+MIDDLEWARE += [  # noqa: F405
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+]
 
 INTERNAL_IPS = ["127.0.0.1"]
-
-DATABASES = base.DATABASES
-ALLOWED_HOSTS = base.ALLOWED_HOSTS
-STATIC_URL = base.STATIC_URL
