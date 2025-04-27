@@ -8,34 +8,27 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-
 # Django
 *.log
 *.pot
 *.pyc
 db.sqlite3
-media/
+media/z
 staticfiles/
 local_settings.py
 .env
-
 # VS Code
 .vscode/
-
 # PyCharm
 .idea/
-
 # macOS
 .DS_Store
-
 # Windows
 Thumbs.db
 ehthumbs.db
-
 # Virtualenv
 venv/
 ENV/
 env/
-
 # Poetry
 .venv/
