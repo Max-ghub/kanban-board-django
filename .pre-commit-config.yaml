@@ -1,4 +1,9 @@
 repos:
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.10.1
+    hooks:
+      - id: isort
+
   - repo: https://github.com/psf/black
     rev: 25.1.0
     hooks:
@@ -8,8 +13,3 @@ repos:
     rev: 7.2.0
     hooks:
       - id: flake8
-
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.10.1
-    hooks:
-      - id: isort
