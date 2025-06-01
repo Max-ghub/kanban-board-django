@@ -17,6 +17,7 @@ media/z
 staticfiles/
 local_settings.py
 .env
+.env.staging
 # VS Code
 .vscode/
 # PyCharm
