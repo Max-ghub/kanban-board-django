@@ -47,3 +47,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.get_short_name()} ({self.phone})"
+
+    class Meta:
+        db_table = "users"
