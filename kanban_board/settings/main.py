@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "users",
     "phone",
-    # "kanban_board.management",
+    "kanban_board.apps.project_management",
 ]
 
 # Настройка PostgreSQL
