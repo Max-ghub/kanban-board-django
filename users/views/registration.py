@@ -56,7 +56,6 @@ def confirm_registration_view(request):
         code = data["code"]
 
         PhoneCode.verify_phone_code(phone, code)
-        PhoneCode.delete_phone_codes(phone)
 
         user = User.objects.get(phone=phone)
         user.is_active = True
@@ -64,5 +63,6 @@ def confirm_registration_view(request):
 
         token = generate_tokens(user)
         return JsonResponse(token)
+
     except ValidationError as e:
         return JsonResponse({"error": e.message}, status=400)

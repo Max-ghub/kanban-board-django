@@ -23,13 +23,8 @@ class PhoneCode(models.Model):
     @classmethod
     def create_phone_code(cls, phone, code):
         """Создание кода"""
-        cls.delete_phone_codes(phone)
-        cls.objects.create(phone=phone, code=code)
-
-    @classmethod
-    def delete_phone_codes(cls, phone):
-        """Удаление всех кодов для номера"""
         cls.objects.filter(phone=phone).delete()
+        cls.objects.create(phone=phone, code=code)
 
     @classmethod
     def verify_phone_code(cls, phone, code):
@@ -37,10 +32,13 @@ class PhoneCode(models.Model):
         try:
             phone_code = cls.objects.get(phone=phone, code=code)
         except cls.DoesNotExist:
-            raise ValidationError("Неверный код")
+            raise ValidationError("Введён неверный код")
 
-        if phone_code.created_at < timezone.now() - timedelta(minutes=30):
-            raise ValidationError("Код просрочен")
+        if phone_code.created_at < timezone.now() - timedelta(minutes=1):
+            cls.objects.filter(phone=phone).delete()
+            raise ValidationError("Код просрочен. Попробуйте зарегистрироваться заново")
+
+        cls.objects.filter(phone=phone).delete()
 
     class Meta:
         db_table = "phone_codes"
