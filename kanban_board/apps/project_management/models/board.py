@@ -10,6 +10,8 @@ class Board(BaseManagementModel):
     )
     title = models.CharField(max_length=64, blank=False)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.title
 

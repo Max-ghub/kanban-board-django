@@ -45,6 +45,8 @@ class Task(BaseManagementModel):
         max_digits=5, decimal_places=2, blank=True, null=True
     )
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.title
 

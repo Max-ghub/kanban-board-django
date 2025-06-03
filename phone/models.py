@@ -14,11 +14,11 @@ def generate_phone_code():
 class PhoneCode(models.Model):
     """Модель телефонного кода"""
 
-    objects = models.Manager()
-
     phone = models.CharField(max_length=12, unique=True)
     code = models.CharField(max_length=6)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = models.Manager()
 
     @classmethod
     def create_phone_code(cls, phone, code):
@@ -31,7 +31,7 @@ class PhoneCode(models.Model):
         """Подтверждение валидности кода"""
         try:
             phone_code = cls.objects.get(phone=phone, code=code)
-        except cls.DoesNotExist:
+        except cls.DoesNotExist:  # type: ignore[attr-defined]
             raise ValidationError("Введён неверный код")
 
         if phone_code.created_at < timezone.now() - timedelta(minutes=1):

@@ -8,6 +8,8 @@ class Column(BaseManagementModel):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name="columns")
     title = models.CharField(max_length=128, blank=False)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.title
 

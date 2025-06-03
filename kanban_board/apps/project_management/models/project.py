@@ -14,6 +14,8 @@ class Project(BaseManagementModel):
     description = models.TextField(max_length=2048, blank=True, null=True)
     is_archived = models.BooleanField(default=False)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.title
 

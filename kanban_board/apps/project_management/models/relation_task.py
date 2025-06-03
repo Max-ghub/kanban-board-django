@@ -18,6 +18,8 @@ class RelationTask(models.Model):
     )
     relation_type = models.CharField(max_length=20, choices=RelationTaskType.choices)
 
+    objects = models.Manager()
+
     class Meta:
         db_table = "management_relation_tasks"
         unique_together = ("from_task", "to_task", "relation_type")
