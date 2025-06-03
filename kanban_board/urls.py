@@ -21,6 +21,7 @@ urlpatterns = [
     path("", index_page),
     path("admin/", admin.site.urls),
     path("", include("users.urls")),
+    path("", include("kanban_board.apps.project_management.urls")),
     path(
         "api/docs/",
         schema_view.with_ui("swagger", cache_timeout=0),
