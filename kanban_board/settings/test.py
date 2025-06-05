@@ -1,10 +1,10 @@
-from .main import *  # noqa
+from .main import *
 
 DEBUG = True
-INSTALLED_APPS += [  # noqa: F405
+INSTALLED_APPS += [
     "debug_toolbar",
 ]
-MIDDLEWARE += [  # noqa: F405
+MIDDLEWARE += [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 INTERNAL_IPS = ["127.0.0.1"]
