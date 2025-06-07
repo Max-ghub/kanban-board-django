@@ -33,3 +33,5 @@ ENV/
 env/
 # Poetry
 .venv/
+# Redis
+dump.rdb
