@@ -16,6 +16,7 @@ class PhoneCode(models.Model):
 
     phone = models.CharField(max_length=12, unique=True)
     code = models.CharField(max_length=6)
+    attempts = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     objects = models.Manager()
@@ -39,6 +40,10 @@ class PhoneCode(models.Model):
             raise ValidationError("Код просрочен. Попробуйте зарегистрироваться заново")
 
         cls.objects.filter(phone=phone).delete()
+
+    def increment_attempts(self):
+        self.attempts += 1
+        self.save()
 
     class Meta:
         db_table = "phone_codes"
