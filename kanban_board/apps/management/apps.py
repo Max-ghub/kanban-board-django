@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class ProjectManagementConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "kanban_board.apps.project_management"
+    name = "kanban_board.apps.management"

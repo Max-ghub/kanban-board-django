@@ -7,6 +7,7 @@ from rest_framework import serializers
 from phone.models import PhoneCode
 
 User = get_user_model()
+MAX_ATTEMPTS = 5
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -18,9 +19,6 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
-
-
-MAX_ATTEMPTS = 5
 
 
 class RegisterVerifyUserSerializer(serializers.Serializer):

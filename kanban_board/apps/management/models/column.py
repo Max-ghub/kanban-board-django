@@ -7,6 +7,7 @@ from .board import Board
 class Column(BaseManagementModel):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name="columns")
     title = models.CharField(max_length=128, blank=False)
+    order = models.PositiveIntegerField(default=0)
 
     objects = models.Manager()
 
@@ -15,3 +16,4 @@ class Column(BaseManagementModel):
 
     class Meta:
         db_table = "management_columns"
+        ordering = ["order"]
