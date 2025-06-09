@@ -6,13 +6,13 @@ from rest_framework.views import APIView
 
 from kanban_board.apps.management.models import Board, Column
 from kanban_board.apps.management.serializes.column import (
-    ColumnReorderSerializer,
-    ColumnSerializer,
+    ColumnModelSerializer,
+    ColumnReorderModelSerializer,
 )
 
 
 class CreateColumnAPIView(generics.CreateAPIView):
-    serializer_class = ColumnSerializer
+    serializer_class = ColumnModelSerializer
 
     def perform_create(self, serializer):
         board = Board.objects.get(pk=self.kwargs["board_id"])
@@ -24,7 +24,7 @@ class CreateColumnAPIView(generics.CreateAPIView):
 
 
 class UpdateColumnAPIView(generics.UpdateAPIView):
-    serializer_class = ColumnSerializer
+    serializer_class = ColumnModelSerializer
     lookup_url_kwarg = "column_id"
 
     def get_queryset(self):
@@ -56,7 +56,7 @@ class ColumnsReorderAPIView(APIView):
                         status=status.HTTP_404_NOT_FOUND,
                     )
 
-                column_serializer = ColumnReorderSerializer(
+                column_serializer = ColumnReorderModelSerializer(
                     column, data={"order": order}, partial=True
                 )
                 if not column_serializer.is_valid():
