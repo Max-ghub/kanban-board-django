@@ -10,12 +10,11 @@ User = get_user_model()
 MAX_ATTEMPTS = 5
 
 
-class RegisterUserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-
+class RegisterUserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["phone", "username", "name", "surname", "password"]
+        extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)

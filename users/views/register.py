@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from core.utils.jwt import generate_tokens
 from users.serializers.register import (
-    RegisterUserSerializer,
+    RegisterUserModelSerializer,
     RegisterVerifyUserSerializer,
 )
 
@@ -14,7 +14,7 @@ User = get_user_model()
 
 class RegisterUserView(APIView):
     def post(self, request):
-        serializer = RegisterUserSerializer(data=request.data)
+        serializer = RegisterUserModelSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"message": "Код отправлен"}, status=status.HTTP_200_OK)
