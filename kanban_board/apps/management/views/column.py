@@ -4,6 +4,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.utils.view import get_object_or_404
 from kanban_board.apps.management.models import Board, Column
 from kanban_board.apps.management.serializes.column import (
     ColumnModelSerializer,
@@ -33,13 +34,7 @@ class UpdateColumnAPIView(generics.UpdateAPIView):
 
 class ColumnsReorderAPIView(APIView):
     def post(self, request, board_id):
-        try:
-            board = Board.objects.get(pk=board_id)
-        except Board.DoesNotExist:
-            return Response(
-                data={"error": f"Доска {board_id} не найдена"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        board = get_object_or_404(model=Board, pk=board_id)
 
         column_ids = request.data["column_ids"]
         if not isinstance(column_ids, list):
