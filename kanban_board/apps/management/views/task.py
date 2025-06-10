@@ -16,12 +16,11 @@ def get_request_field(request, field_name):
     return value
 
 
-def save_serializer(serializer_class, **kwargs):
+def validate_and_save(serializer_class, **kwargs):
     serializer = serializer_class(**kwargs)
-    if serializer.is_valid():
-        serializer.save()
-    else:
-        raise ValidationError(detail={"error": serializer.errors})
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return serializer
 
 
 class TaskViewSet(ModelViewSet):
@@ -31,34 +30,32 @@ class TaskViewSet(ModelViewSet):
     @action(detail=True, methods=["post"], url_path="move")
     def move_task(self, request, pk=None):
         task = get_object_or_404(model=Task, pk=pk)
-
         column_id = get_request_field(request=request, field_name="column_id")
         column = get_object_or_404(model=Column, pk=column_id)
 
-        save_serializer(
+        serializer = validate_and_save(
             serializer_class=TaskModelSerializer,
             instance=task,
             data={"column": column.id},
             partial=True,
         )
 
-        return Response({"message": f"Задача перемещена в колонку {column_id}"})
+        return Response(data=serializer.data)
 
     @action(detail=True, methods=["post"], url_path="assign")
     def set_assign(self, request, pk=None):
         task = get_object_or_404(model=Task, pk=pk)
-
         user_id = get_request_field(request=request, field_name="user_id")
         user = get_object_or_404(model=User, pk=user_id)
 
-        save_serializer(
+        serializer = validate_and_save(
             serializer_class=TaskModelSerializer,
             instance=task,
             data={"assignee": user.id},
             partial=True,
         )
 
-        return Response({"message": f"Установлен исполнитель задачи {user_id}"})
+        return Response(data=serializer.data)
 
     @action(detail=True, methods=["post"], url_path="subtasks")
     def create_subtask(self, request, pk=None):
