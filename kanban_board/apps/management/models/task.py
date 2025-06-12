@@ -23,14 +23,17 @@ class TaskPriority(models.TextChoices):
 
 class Task(BaseManagementModel):
     column = models.ForeignKey(Column, on_delete=models.CASCADE, related_name="tasks")
+    parent = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="subtasks"
+    )
     title = models.CharField(max_length=128, blank=False)
     description = models.TextField(max_length=4096, blank=True, null=True)
     assignee = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="assigned_tasks",
         blank=True,
         null=True,
+        related_name="assigned_tasks",
     )
     status = models.CharField(
         max_length=20, choices=TaskStatus, default=TaskStatus.BACKLOG
