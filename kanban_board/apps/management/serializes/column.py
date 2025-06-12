@@ -7,7 +7,10 @@ class ColumnModelSerializer(ModelSerializer):
     class Meta:
         model = Column
         fields = "__all__"
-        read_only_fields = ["board", "order"]
+        extra_kwargs = {
+            "board": {"read_only": True},
+            "order": {"read_only": True},
+        }
 
 
 class ColumnReorderModelSerializer(ModelSerializer):
