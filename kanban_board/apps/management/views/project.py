@@ -1,30 +1,50 @@
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from core.utils.view import get_object_or_404
 from kanban_board.apps.management.models import Project
-from kanban_board.apps.management.serializes.project import ProjectSerializer
-from users.models import User
+from kanban_board.apps.management.serializes.project import (
+    ProjectMemberSerializer,
+    ProjectSerializer,
+)
+from kanban_board.apps.management.services.project import ProjectMemberService
 
 
 class ProjectViewSet(ModelViewSet):
-    queryset = Project.objects.all()
+    queryset = Project.objects.prefetch_related("members").all()
     serializer_class = ProjectSerializer
 
-    @action(detail=True, methods=["post"], url_path="members")
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="members",
+        serializer_class=ProjectMemberSerializer,
+    )
     def add_member(self, request, pk=None):
         project = self.get_object()
-        user_id = request.data.get("user_id")
-        user = get_object_or_404(model=User, pk=user_id)
-        project.members.add(user)
-        return Response({"message": f'Пользователь "{user_id}" добавлен в проект'})
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-    @action(detail=True, methods=["delete"], url_path="members/(?P<user_id>[^/.]+)")
+        updated = ProjectMemberService.add_member(
+            project, serializer.validated_data["user_id"]
+        )
+
+        return Response(ProjectSerializer(updated).data, status=status.HTTP_201_CREATED)
+
+    @action(
+        detail=True,
+        methods=["delete"],
+        url_path="members/(?P<user_id>[^/.]+)",
+        serializer_class=ProjectMemberSerializer,
+    )
     def delete_member(self, request, pk=None, user_id=None):
         project = self.get_object()
-        user = get_object_or_404(model=User, pk=user_id)
-        project.members.remove(user)
-        return Response(
-            {"message": f'Пользователь "{user.username}" удалён из проекта'}
+        serializer = self.get_serializer(data={"user_id": user_id})
+        serializer.is_valid(raise_exception=True)
+
+        updated = ProjectMemberService.delete_member(
+            project, serializer.validated_data["user_id"]
         )
+
+        return Response(ProjectSerializer(updated).data, status=status.HTTP_200_OK)
