@@ -73,6 +73,7 @@ class TaskViewSet(ModelViewSet):
         serializer = validate_and_save_serializer(
             serializer_class=self.serializer_class,
             data=subtask_data,
+            partial=False,
         )
 
         return Response(data=serializer.data, status=201)
