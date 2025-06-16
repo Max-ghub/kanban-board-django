@@ -6,4 +6,4 @@ from kanban_board.apps.management.models import Board
 class BoardModelSerializer(ModelSerializer):
     class Meta:
         model = Board
-        fields = "__all__"
+        fields = ["title", "project", "updated_at", "created_at"]
