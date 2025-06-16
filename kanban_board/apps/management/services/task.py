@@ -1,6 +1,6 @@
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import get_object_or_404
 
-from core.utils.view import get_object_or_404
 from kanban_board.apps.management.models import Column, Task
 from users.models import User
 

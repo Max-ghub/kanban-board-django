@@ -1,5 +1,5 @@
-from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import get_object_or_404
 
 from kanban_board.apps.management.models import Project
 from users.models import User
