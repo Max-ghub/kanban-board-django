@@ -22,7 +22,7 @@ class TaskPriority(models.TextChoices):
 
 
 class Task(BaseManagementModel):
-    title = models.CharField(max_length=128, blank=False)
+    title = models.CharField(max_length=64, blank=False)
     description = models.TextField(max_length=4096, blank=True, null=True)
     column = models.ForeignKey(Column, on_delete=models.CASCADE, related_name="tasks")
     parent = models.ForeignKey(
