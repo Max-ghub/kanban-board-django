@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "users",
     "phone",
     "management",
+    "notification",
 ]
 
 # Настройка PostgreSQL
