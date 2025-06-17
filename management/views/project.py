@@ -9,10 +9,15 @@ from management.services.project import ProjectMemberService
 
 
 class ProjectViewSet(ModelViewSet):
-    queryset = Project.objects.prefetch_related("members").all()
+    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
-    @action(detail=True, methods=["post"], url_path="members")
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="members",
+        serializer_class=ProjectMemberSerializer,
+    )
     def add_member(self, request, pk=None):
         project = self.get_object()
         serializer = ProjectMemberSerializer(data=request.data)
@@ -24,7 +29,12 @@ class ProjectViewSet(ModelViewSet):
 
         return Response(ProjectSerializer(updated).data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["delete"], url_path="members/(?P<user_id>[^/.]+)")
+    @action(
+        detail=True,
+        methods=["delete"],
+        url_path="members/(?P<user_id>[^/.]+)",
+        serializer_class=ProjectMemberSerializer,
+    )
     def delete_member(self, request, pk=None, user_id=None):
         project = self.get_object()
         serializer = ProjectMemberSerializer(data={"user_id": user_id})
