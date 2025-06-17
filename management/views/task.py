@@ -2,14 +2,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from kanban_board.apps.management.models import Task
-from kanban_board.apps.management.serializes.task import (
+from management.models import Task
+from management.serializes.task import (
     TaskAssigneeSerializer,
     TaskModelSerializer,
     TaskMoveSerializer,
     TaskSubtaskSerializer,
 )
-from kanban_board.apps.management.services.task import TaskService
+from management.services.task import TaskService
 
 
 class TaskViewSet(ModelViewSet):

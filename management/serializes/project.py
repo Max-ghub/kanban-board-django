@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from kanban_board.apps.management.models import Project
+from management.models import Project
 
 
 class ProjectSerializer(serializers.ModelSerializer):

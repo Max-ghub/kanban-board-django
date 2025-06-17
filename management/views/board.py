@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
-from kanban_board.apps.management.models import Board
-from kanban_board.apps.management.serializes.board import BoardModelSerializer
+from management.models import Board
+from management.serializes.board import BoardModelSerializer
 
 
 class BoardViewSet(ModelViewSet):

@@ -3,12 +3,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from kanban_board.apps.management.models import Project
-from kanban_board.apps.management.serializes.project import (
-    ProjectMemberSerializer,
-    ProjectSerializer,
-)
-from kanban_board.apps.management.services.project import ProjectMemberService
+from management.models import Project
+from management.serializes.project import ProjectMemberSerializer, ProjectSerializer
+from management.services.project import ProjectMemberService
 
 
 class ProjectViewSet(ModelViewSet):

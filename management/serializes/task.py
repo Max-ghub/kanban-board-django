@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from kanban_board.apps.management.models import Task
+from management.models import Task
 
 
 class TaskModelSerializer(serializers.ModelSerializer):

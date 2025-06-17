@@ -1,6 +1,6 @@
 from django.urls import path
 
-from kanban_board.apps.management.views.column import (
+from management.views.column import (
     ColumnsReorderAPIView,
     CreateColumnAPIView,
     UpdateColumnAPIView,

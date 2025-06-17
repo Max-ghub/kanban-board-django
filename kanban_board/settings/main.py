@@ -23,7 +23,7 @@ INSTALLED_APPS = [
     "api",
     "users",
     "phone",
-    "kanban_board.apps.management",
+    "management",
 ]
 
 # Настройка PostgreSQL

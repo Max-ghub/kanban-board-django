@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from kanban_board.apps.management.models import Column
+from management.models import Column
 
 
 class ColumnModelSerializer(serializers.ModelSerializer):

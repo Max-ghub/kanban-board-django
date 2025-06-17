@@ -4,12 +4,12 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from kanban_board.apps.management.models import Board, Column
-from kanban_board.apps.management.serializes.column import (
+from management.models import Board, Column
+from management.serializes.column import (
     BoardColumnReorderModelSerializer,
     ColumnModelSerializer,
 )
-from kanban_board.apps.management.services.column import BoardColumnReorderService
+from management.services.column import BoardColumnReorderService
 
 
 class CreateColumnAPIView(generics.CreateAPIView):

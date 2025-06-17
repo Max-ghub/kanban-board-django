@@ -1,4 +1,4 @@
-from kanban_board.apps.management.models import Column
+from management.models import Column
 
 
 class BoardColumnReorderService:
