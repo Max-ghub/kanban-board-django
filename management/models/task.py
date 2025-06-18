@@ -6,22 +6,20 @@ from .base_model import BaseManagementModel
 from .column import Column
 
 
-class TaskStatus(models.TextChoices):
-    BACKLOG = "backlog", "Backlog"
-    TODO = "todo", "Todo"
-    IN_PROGRESS = "in_progress", "In progress"
-    REVIEW = "review", "Review"
-    DONE = "done", "Done"
-    ARCHIVED = "archived", "Archived"
-
-
-class TaskPriority(models.TextChoices):
-    LOW = "low", "Low"
-    MEDIUM = "medium", "Medium"
-    HIGH = "high", "High"
-
-
 class Task(BaseManagementModel):
+    class TaskStatus(models.TextChoices):
+        BACKLOG = "BACKLOG", "Бэклог"
+        TODO = "TODO", "К выполнению"
+        IN_PROGRESS = "IN_PROGRESS", "В работе"
+        REVIEW = "REVIEW", "На проверке"
+        DONE = "DONE", "Выполнено"
+        ARCHIVED = "ARCHIVED", "В архиве"
+
+    class TaskPriority(models.TextChoices):
+        LOW = "LOW", "Низкий"
+        MEDIUM = "MEDIUM", "Средний"
+        HIGH = "HIGH", "Высокий"
+
     title = models.CharField(max_length=64, blank=False)
     description = models.TextField(max_length=4096, blank=True, null=True)
     column = models.ForeignKey(Column, on_delete=models.CASCADE, related_name="tasks")
@@ -36,10 +34,10 @@ class Task(BaseManagementModel):
         related_name="assigned_tasks",
     )
     priority = models.CharField(
-        max_length=10, choices=TaskPriority, default=TaskPriority.MEDIUM
+        max_length=32, choices=TaskPriority, default=TaskPriority.MEDIUM
     )
     status = models.CharField(
-        max_length=20, choices=TaskStatus, default=TaskStatus.BACKLOG
+        max_length=32, choices=TaskStatus, default=TaskStatus.BACKLOG
     )
     estimated_time = models.DecimalField(
         max_digits=5, decimal_places=2, blank=True, null=True
