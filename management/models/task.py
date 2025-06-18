@@ -34,10 +34,10 @@ class Task(BaseManagementModel):
         related_name="assigned_tasks",
     )
     priority = models.CharField(
-        max_length=32, choices=TaskPriority, default=TaskPriority.MEDIUM
+        max_length=32, choices=TaskPriority.choices, default=TaskPriority.MEDIUM
     )
     status = models.CharField(
-        max_length=32, choices=TaskStatus, default=TaskStatus.BACKLOG
+        max_length=32, choices=TaskStatus.choices, default=TaskStatus.BACKLOG
     )
     estimated_time = models.DecimalField(
         max_digits=5, decimal_places=2, blank=True, null=True
