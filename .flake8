@@ -4,4 +4,5 @@ exclude =
     */migrations/*,
     __pycache__/,
     manage.py,
-    kanban_board/settings/*
+    kanban_board/settings/*,
+    __init__.py
