@@ -1,35 +1,33 @@
-from rest_framework import generics, status, views
+from rest_framework import status, views
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from notification.models import Notification
-from notification.serializers import NotificationModelSerializer
+from notification.models import Notification, NotificationSettings
+from notification.serializers import (
+    NotificationSerializer,
+    NotificationSettingsSerializer,
+)
 
 
-class NotificationListView(generics.ListAPIView):
-    serializer_class = NotificationModelSerializer
+class NotificationView(views.APIView):
     permission_classes = [IsAuthenticated]
-    queryset = Notification.objects.all()
 
-    def get_queryset(self):
-        user = self.request.user
-        queryset = super().get_queryset().filter(user=self.request.user)
-
+    def get(self, request):
+        user = request.user
+        notifications = user.notifications.all()
         if user.notification_settings.show_unread_only:
-            queryset = queryset.filter(is_read=False)
+            notifications = notifications.filter(is_read=False)
+        serializer = NotificationSerializer(notifications, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-        return queryset
-
-
-class NotificationDestroyView(generics.DestroyAPIView):
-    serializer_class = NotificationModelSerializer
-    permission_classes = [IsAuthenticated]
-    lookup_url_kwarg = "notification_id"
-    queryset = Notification.objects.all()
-
-    def get_queryset(self):
-        return super().get_queryset().filter(user=self.request.user)
+    def delete(self, request, notification_id):
+        notification = get_object_or_404(
+            Notification, pk=notification_id, user=request.user
+        )
+        notification.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class NotificationReadView(views.APIView):
@@ -47,3 +45,21 @@ class NotificationReadView(views.APIView):
         return Response(
             {"status": "read", "id": notification_id}, status=status.HTTP_200_OK
         )
+
+
+class NotificationSettingsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        notification_settings = NotificationSettings.objects.get(user=request.user)
+        serializer = NotificationSettingsSerializer(notification_settings)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        notification_settings = NotificationSettings.objects.get(user=request.user)
+        serializer = NotificationSettingsSerializer(
+            notification_settings, data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
