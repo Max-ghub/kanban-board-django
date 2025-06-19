@@ -8,6 +8,7 @@ from users.serializers.register import (
     RegisterUserModelSerializer,
     RegisterVerifyUserSerializer,
 )
+from users.signals import user_activated
 
 User = get_user_model()
 
@@ -25,5 +26,8 @@ class RegisterVerifyUserView(APIView):
         serializer = RegisterVerifyUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+
+        user_activated.send(sender=User, user=user)
+
         tokens = generate_tokens(user)
         return Response(data=tokens, status=status.HTTP_200_OK)
