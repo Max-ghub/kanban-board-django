@@ -286,6 +286,18 @@ django = ">=4.2.9"
 sqlparse = ">=0.2"
 
 [[package]]
+name = "django-extra-settings"
+version = "0.14.0"
+description = "config and manage typed extra settings using just the django admin."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "django_extra_settings-0.14.0-py3-none-any.whl", hash = "sha256:989c6c837597e6bc6f833a4fd938e9c772c4be2b982d72cc8c99b9394b9b5deb"},
+    {file = "django_extra_settings-0.14.0.tar.gz", hash = "sha256:cfd3b7ca414b3cca21c0314fca62f9cc9530b3be917dc853689ae589943b768b"},
+]
+
+[[package]]
 name = "djangorestframework"
 version = "3.16.0"
 description = "Web APIs for Django, made easy."
@@ -349,6 +361,21 @@ uritemplate = ">=3.0.0"
 [package.extras]
 coreapi = ["coreapi (>=2.3.3)", "coreschema (>=0.0.4)"]
 validation = ["swagger-spec-validator (>=2.1.0)"]
+
+[[package]]
+name = "faker"
+version = "37.4.0"
+description = "Faker is a Python package that generates fake data for you."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "faker-37.4.0-py3-none-any.whl", hash = "sha256:cb81c09ebe06c32a10971d1bbdb264bb0e22b59af59548f011ac4809556ce533"},
+    {file = "faker-37.4.0.tar.gz", hash = "sha256:7f69d579588c23d5ce671f3fa872654ede0e67047820255f43a4aa1925b89780"},
+]
+
+[package.dependencies]
+tzdata = "*"
 
 [[package]]
 name = "filelock"
@@ -916,4 +943,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12"
-content-hash = "9b06c5c146afeb261ebfeca0def8e94dba56b07c04448ee3b6e0ed57b13e1ef1"
+content-hash = "fd54955c652a6d6295745f821286f5276f74d48a9f27d399214d01be95a0cf52"

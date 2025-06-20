@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "management",
     "notification",
     "notification_preferences",
+    "extra_settings",
 ]
 
 # Настройка PostgreSQL
