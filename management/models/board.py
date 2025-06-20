@@ -17,3 +17,5 @@ class Board(BaseManagementModel):
 
     class Meta:
         db_table = "management_boards"
+        verbose_name = "Таблица"
+        verbose_name_plural = "Таблицы"

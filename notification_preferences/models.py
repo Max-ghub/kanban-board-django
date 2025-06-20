@@ -14,6 +14,8 @@ class NotificationPreferences(models.Model):
 
     class Meta:
         db_table = "notification_preferences"
+        verbose_name = "Внешняя настройка уведомлений"
+        verbose_name_plural = "Внешние настройки уведомлений"
 
     objects = models.Manager()
 

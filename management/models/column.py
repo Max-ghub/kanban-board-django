@@ -16,4 +16,6 @@ class Column(BaseManagementModel):
 
     class Meta:
         db_table = "management_columns"
+        verbose_name = "Колонка"
+        verbose_name_plural = "Колонки"
         ordering = ["order"]

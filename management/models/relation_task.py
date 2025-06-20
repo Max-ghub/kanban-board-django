@@ -22,4 +22,6 @@ class RelationTask(models.Model):
 
     class Meta:
         db_table = "management_relation_tasks"
+        verbose_name = "Связанная задача"
+        verbose_name_plural = "Связанные задачи"
         unique_together = ("from_task", "to_task", "relation_type")

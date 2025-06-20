@@ -47,3 +47,5 @@ class PhoneCode(models.Model):
 
     class Meta:
         db_table = "phone_codes"
+        verbose_name = "Телефонный код"
+        verbose_name_plural = "Телефонные коды"

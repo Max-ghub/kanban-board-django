@@ -21,3 +21,5 @@ class Project(BaseManagementModel):
 
     class Meta:
         db_table = "management_projects"
+        verbose_name = "Проект"
+        verbose_name_plural = "Проекты"

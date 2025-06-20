@@ -53,3 +53,5 @@ class Task(BaseManagementModel):
 
     class Meta:
         db_table = "management_tasks"
+        verbose_name = "Задача"
+        verbose_name_plural = "Задачи"
