@@ -1,82 +1,21 @@
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from .models import User
 
 
-class UserCreationForm(forms.ModelForm):
-    password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
-    password2 = forms.CharField(
-        label="Password confirmation", widget=forms.PasswordInput
-    )
-
-    class Meta:
-        model = User
-        fields = ("phone", "username", "name", "surname")
-
-    def clean_password2(self):
-        pw1 = self.cleaned_data.get("password1")
-        pw2 = self.cleaned_data.get("password2")
-        if pw1 and pw2 and pw1 != pw2:
-            raise forms.ValidationError("Passwords don’t match")
-        return pw2
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
-        if commit:
-            user.save()
-        return user
-
-
-class UserChangeForm(forms.ModelForm):
-    password = ReadOnlyPasswordHashField(
-        label="Password",
-        help_text=(
-            "Password hashes are not stored in plain text, so there is no way to see "
-            "the raw password, but you can change it using the form below."
-        ),
-    )
-
-    class Meta:
-        model = User
-        fields = (
-            "phone",
-            "username",
-            "password",
-            "name",
-            "surname",
-            "is_active",
-            "is_staff",
-            "is_superuser",
-            "groups",
-            "user_permissions",
-        )
-
-    def clean_password(self):
-        return self.initial["password"]
-
-
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    form = UserChangeForm
-    add_form = UserCreationForm
+    model = User
 
-    list_display = (
-        "phone",
-        "username",
-        "name",
-        "surname",
-        "is_active",
-        "is_staff",
-        "is_superuser",
-    )
-    list_filter = ("is_staff", "is_superuser", "is_active", "groups")
+    list_display = ("phone", "username", "name", "surname", "is_staff", "is_active")
+    list_filter = ("is_staff", "is_active", "is_superuser")
+    search_fields = ("phone", "username", "name", "surname")
+    ordering = ("phone",)
 
     fieldsets = (
-        (None, {"fields": ("phone", "password")}),
+        (None, {"fields": ("phone",)}),
         ("Personal info", {"fields": ("username", "name", "surname")}),
         (
             "Permissions",
@@ -90,8 +29,10 @@ class UserAdmin(BaseUserAdmin):
                 )
             },
         ),
-        ("Important dates", {"fields": ("date_joined",)}),
+        ("Important dates", {"fields": ("last_login", "date_joined")}),
     )
+    readonly_fields = ("last_login", "date_joined")
+
     add_fieldsets = (
         (
             None,
@@ -102,15 +43,35 @@ class UserAdmin(BaseUserAdmin):
                     "username",
                     "name",
                     "surname",
-                    "password1",
-                    "password2",
+                    "raw_password",
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
                 ),
             },
         ),
     )
-    search_fields = ("phone", "username", "name", "surname")
-    ordering = ("phone",)
-    filter_horizontal = (
-        "groups",
-        "user_permissions",
-    )
+
+    def get_form(self, request, obj=None, **kwargs):
+        Form = super().get_form(request, obj, **kwargs)
+
+        class F(Form):
+            raw_password = forms.CharField(
+                label="Пароль (новый/при создании)",
+                required=(obj is None),
+                widget=forms.PasswordInput,
+                help_text="Введите пароль для нового пользователя или для смены.",
+            )
+
+        return F
+
+    def save_model(self, request, obj, form, change):
+        raw = form.cleaned_data.get("raw_password")
+        if raw:
+            obj.set_password(raw)
+        else:
+            if not change:
+                # при создании без введённого raw_password — сгенерировать случайный
+                obj.set_password(User.objects.make_random_password())
+            # при редактировании без raw_password — оставляем старый пароль
+        super().save_model(request, obj, form, change)
