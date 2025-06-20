@@ -5,6 +5,7 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from phone.models import PhoneCode
+from users.services import activate_user_by_phone
 
 User = get_user_model()
 MAX_ATTEMPTS = 5
@@ -52,11 +53,4 @@ class RegisterVerifyUserSerializer(serializers.Serializer):
         return attrs
 
     def save(self):
-        phone = self.validated_data["phone"]
-        user = User.objects.get(phone=phone)
-        user.is_active = True
-        user.save()
-
-        PhoneCode.objects.filter(phone=phone).delete()
-
-        return user
+        return activate_user_by_phone(self.validated_data["phone"])
