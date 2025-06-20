@@ -22,7 +22,7 @@ class TaskService:
     def set_assignee(task, user_id):
         user = get_object_or_404(User, pk=user_id) if user_id is not None else None
 
-        if task.assignee_id == user_id:
+        if (task.assignee and task.assignee.id) == user_id:
             raise ValidationError({"user_id": "Назначение не изменяет исполнителя"})
 
         task.assignee = user
