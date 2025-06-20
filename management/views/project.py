@@ -16,7 +16,6 @@ class ProjectViewSet(ModelViewSet):
         detail=True,
         methods=["post"],
         url_path="members",
-        serializer_class=ProjectMemberSerializer,
     )
     def add_member(self, request, pk=None):
         project = self.get_object()
@@ -33,7 +32,6 @@ class ProjectViewSet(ModelViewSet):
         detail=True,
         methods=["delete"],
         url_path="members/(?P<user_id>[^/.]+)",
-        serializer_class=ProjectMemberSerializer,
     )
     def delete_member(self, request, pk=None, user_id=None):
         project = self.get_object()
