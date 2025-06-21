@@ -5,6 +5,8 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
+    """Создание фейковых пользователей и полей канбан доски"""
+
     help = "Run both user generation and project/demo generation commands"
 
     def add_arguments(self, parser):

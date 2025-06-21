@@ -5,6 +5,6 @@ exclude =
     __pycache__/,
     __init__.py,
     kanban_board/settings/*,
-    */management/commands/*
+    *core/management/commands/*
     manage.py,
     apps.py

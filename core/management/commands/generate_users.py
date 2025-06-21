@@ -12,6 +12,8 @@ from users.models import User
 
 
 class Command(BaseCommand):
+    """Создание фейковых пользователей"""
+
     help = "Generate random users with notification settings, preferences and notifications"
 
     def add_arguments(self, parser):

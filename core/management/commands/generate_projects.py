@@ -15,6 +15,8 @@ from users.models import User
 
 
 class Command(BaseCommand):
+    """Создание фейковых полей канбан доски"""
+
     help = "Generate random projects, boards, columns, tasks and relations linking to random existing users"
 
     def add_arguments(self, parser):
