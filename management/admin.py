@@ -46,11 +46,22 @@ class IncomingRelationInline(admin.TabularInline):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ("title", "owner", "is_archived")
-    list_filter = ("is_archived", "owner")
+    list_display = ("owner", "title", "is_archived", "task_completed_percent")
+    list_filter = ("owner", "is_archived")
+    fields = ("title", "description", "owner", "members", "is_archived", "task_completed_percent")
     search_fields = ("title", "description", "owner__username", "owner__phone")
-    readonly_fields = ()
+    filter_horizontal = ("members",)
+    readonly_fields = ("task_completed_percent",)
+    ordering = ("owner",)
     inlines = [BoardInline]
+
+    def task_completed_percent(self, obj):
+        total = Task.objects.filter(column__board__project=obj).count()
+        if total == 0:
+            return "—"
+        done = Task.objects.filter(column__board__project=obj, status=Task.TaskStatus.DONE).count()
+        return f"{(done / total) * 100:.0f}%"
+    task_completed_percent.short_description = "Выполнено задач"
 
 
 @admin.register(Board)
@@ -58,24 +69,25 @@ class BoardAdmin(admin.ModelAdmin):
     list_display = ("title", "project")
     list_filter = ("project",)
     search_fields = ("title", "project__title")
+    ordering = ("project",)
     inlines = [ColumnInline]
-
 
 @admin.register(Column)
 class ColumnAdmin(admin.ModelAdmin):
     list_display = ("title", "board", "order")
     list_filter = ("board",)
     search_fields = ("title", "board__title")
-    ordering = ("order",)
+    ordering = ("board__title", "order")
     inlines = [TaskInline]
 
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     list_display = ("title", "column", "assignee", "status", "priority")
-    list_filter = ("status", "priority", "assignee", "column")
+    list_filter = ("assignee", "priority", "status")
     search_fields = ("title", "description", "assignee__username", "assignee__phone")
     inlines = [OutgoingRelationInline, IncomingRelationInline]
+    ordering = ("column",)
     fields = (
         "title",
         "description",
