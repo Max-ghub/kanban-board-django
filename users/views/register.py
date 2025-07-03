@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from extra_settings.models import Setting
 
 from core.utils.jwt import generate_tokens
 from users.serializers.register import (
@@ -15,6 +17,8 @@ User = get_user_model()
 
 class RegisterUserView(APIView):
     def post(self, request):
+        if Setting.get("OFF_REGISTER"):
+            return JsonResponse({"message": "Registration is disabled"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = RegisterUserModelSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
