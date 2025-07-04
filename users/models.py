@@ -27,8 +27,6 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """Модель пользователя"""
-
     phone = models.CharField(max_length=12, unique=True)
     username = models.CharField(max_length=16, unique=True, blank=False)
     name = models.CharField(max_length=24, blank=True)
