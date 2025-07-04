@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from core.utils.jwt import generate_tokens
 from users.serializers.register import (
-    RegisterUserModelSerializer,
+    RegisterUserSerializer,
     RegisterVerifyUserSerializer,
 )
 from users.signals import user_activated
@@ -19,10 +19,10 @@ class RegisterUserView(APIView):
     def post(self, request):
         if Setting.get("OFF_REGISTER"):
             return JsonResponse(
-                {"message": "Registration is disabled"},
+                {"message": "Регистрация временно отключена, попробуйте позже"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        serializer = RegisterUserModelSerializer(data=request.data)
+        serializer = RegisterUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"message": "Код отправлен"}, status=status.HTTP_200_OK)

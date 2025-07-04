@@ -4,22 +4,18 @@ from django.db import models
 
 
 class UserManager(BaseUserManager):
-    """Содержит методы для создания пользователя и суперпользователя"""
-
     def _create_user(self, phone, username, password, **extra_fields):
         if not phone:
-            raise ValueError("Не был указан телефонный номер")
+            raise ValueError("Номер телефона не был указан")
         user = self.model(phone=phone, username=username, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_user(self, phone, username, password, **extra_fields):
-        """Создание пользователя"""
         return self._create_user(phone, username, password, **extra_fields)
 
     def create_superuser(self, phone, username, password, **extra_fields):
-        """Создание суперпользователя"""
         extra_fields.setdefault("is_active", True)
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)

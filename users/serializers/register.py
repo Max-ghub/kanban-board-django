@@ -11,7 +11,7 @@ User = get_user_model()
 MAX_ATTEMPTS = 5
 
 
-class RegisterUserModelSerializer(serializers.ModelSerializer):
+class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["phone", "username", "name", "surname", "password"]

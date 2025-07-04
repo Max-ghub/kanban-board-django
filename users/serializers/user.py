@@ -3,7 +3,7 @@ from rest_framework.serializers import ModelSerializer
 from users.models import User
 
 
-class UserModelSerializer(ModelSerializer):
+class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = [
@@ -15,4 +15,7 @@ class UserModelSerializer(ModelSerializer):
             "is_active",
             "date_joined",
         ]
-        read_only_fields = ["is_active", "date_joined"]
+        extra_kwargs = {
+            "is_active": {"read_only": True},
+            "date_joined": {"read_only": True},
+        }

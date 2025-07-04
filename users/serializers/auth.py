@@ -6,7 +6,7 @@ from rest_framework_simplejwt.serializers import (
 )
 
 
-class AuthenticationSerializer(TokenObtainPairSerializer):
+class AuthSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         try:
             return super().validate(attrs)
@@ -14,7 +14,7 @@ class AuthenticationSerializer(TokenObtainPairSerializer):
             raise AuthenticationFailed(detail={"error": "Неверный логин или пароль"})
 
 
-class AuthenticationRefreshSerializer(TokenRefreshSerializer):
+class AuthRefreshSerializer(TokenRefreshSerializer):
     def validate(self, attrs):
         try:
             return super().validate(attrs)
