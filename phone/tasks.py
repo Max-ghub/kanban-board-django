@@ -7,4 +7,4 @@ from .models import PhoneCode, generate_phone_code
 def send_phone_code_task(phone):
     code = generate_phone_code()
     PhoneCode.create_phone_code(phone, code)
-    print(f"[Celery DEBUG] Отправлен код {code} на номер {phone}")
+    print(f"[INFO] Отправлен код {code} на номер {phone}")
