@@ -8,10 +8,12 @@ from management.models import Project
 from management.serializes.project import ProjectMemberSerializer, ProjectSerializer
 from management.services.project import ProjectMemberService
 
+
 class ProjectPagination(PageNumberPagination):
     page_size = 3
     page_size_query_param = "page_size"
     max_page_size = 100
+
 
 class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all()

@@ -48,7 +48,14 @@ class IncomingRelationInline(admin.TabularInline):
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ("owner", "title", "is_archived", "task_completed_percent")
     list_filter = ("owner", "is_archived")
-    fields = ("title", "description", "owner", "members", "is_archived", "task_completed_percent")
+    fields = (
+        "title",
+        "description",
+        "owner",
+        "members",
+        "is_archived",
+        "task_completed_percent",
+    )
     search_fields = ("title", "description", "owner__username", "owner__phone")
     filter_horizontal = ("members",)
     readonly_fields = ("task_completed_percent",)
@@ -59,8 +66,11 @@ class ProjectAdmin(admin.ModelAdmin):
         total = Task.objects.filter(column__board__project=obj).count()
         if total == 0:
             return "—"
-        done = Task.objects.filter(column__board__project=obj, status=Task.TaskStatus.DONE).count()
+        done = Task.objects.filter(
+            column__board__project=obj, status=Task.TaskStatus.DONE
+        ).count()
         return f"{(done / total) * 100:.0f}%"
+
     task_completed_percent.short_description = "Выполнено задач"
 
 
@@ -71,6 +81,7 @@ class BoardAdmin(admin.ModelAdmin):
     search_fields = ("title", "project__title")
     ordering = ("project",)
     inlines = [ColumnInline]
+
 
 @admin.register(Column)
 class ColumnAdmin(admin.ModelAdmin):
