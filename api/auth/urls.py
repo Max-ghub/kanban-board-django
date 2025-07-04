@@ -1,8 +1,8 @@
 from django.urls import path
 
-from users.views.auth import AuthenticationRefreshView, AuthenticationView
+from users.views.auth import AuthRefreshView, AuthView
 
 urlpatterns = [
-    path("", AuthenticationView.as_view(), name="auth"),
-    path("refresh/", AuthenticationRefreshView.as_view(), name="auth_refresh"),
+    path("", AuthView.as_view(), name="auth"),
+    path("refresh/", AuthRefreshView.as_view(), name="auth_refresh"),
 ]
