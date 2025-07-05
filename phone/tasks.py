@@ -1,6 +1,7 @@
 from celery import shared_task
 
-from .models import PhoneCode, generate_phone_code
+from .models import PhoneCode
+from .services import generate_phone_code
 
 
 @shared_task()

@@ -1,17 +1,19 @@
-from datetime import timedelta
-
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import serializers
 
-from phone.models import PhoneCode
+from phone.models import CODE_TTL, PhoneCode
 from users.services import activate_user_by_phone
+from users.validators import phone_validator
 
 User = get_user_model()
-MAX_ATTEMPTS = 5
+
+MAX_SEND_CODE_ATTEMPTS = 5
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
+    phone = serializers.CharField(validators=[phone_validator])
+
     class Meta:
         model = User
         fields = ["phone", "username", "name", "surname", "password"]
@@ -22,7 +24,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 
 class RegisterVerifyUserSerializer(serializers.Serializer):
-    phone = serializers.CharField(max_length=12)
+    phone = serializers.CharField(validators=[phone_validator])
     code = serializers.CharField(max_length=6)
 
     def validate(self, attrs):
@@ -34,13 +36,13 @@ class RegisterVerifyUserSerializer(serializers.Serializer):
         except PhoneCode.DoesNotExist:
             raise serializers.ValidationError({"error": "Код не найден"})
 
-        if phone_code.created_at < timezone.now() - timedelta(minutes=10):
+        if phone_code.created_at < timezone.now() - CODE_TTL:
             phone_code.delete()
             raise serializers.ValidationError(
                 {"error": "Код просрочен. Запросите новый"}
             )
 
-        if phone_code.attempts >= MAX_ATTEMPTS:
+        if phone_code.attempts >= MAX_SEND_CODE_ATTEMPTS:
             phone_code.delete()
             raise serializers.ValidationError(
                 {"error": "Превышено количество попыток. Код удалён"}
