@@ -109,7 +109,9 @@ SIMPLE_JWT = {
 WSGI_APPLICATION = "kanban_board.wsgi.application"
 
 # Настройка Celery
-CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_BROKER_URL = (
+    f"redis://{os.getenv('REDIS_HOST', 'redis')}:{os.getenv('REDIS_PORT', '6379')}/0"
+)
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
