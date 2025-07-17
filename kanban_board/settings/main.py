@@ -2,6 +2,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+import sentry_sdk
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -29,6 +30,7 @@ INSTALLED_APPS = [
     "notification",
     "notification_preferences",
     "extra_settings",
+    "django_prometheus",
 ]
 
 # Настройка PostgreSQL
@@ -52,6 +54,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "core.middleware.MaintenanceModeMiddleware",
+    "django_cprofile_middleware.middleware.ProfilerMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 # Настройка валидации пароля пользователя
@@ -116,13 +120,20 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
+# Sentry
+sentry_sdk.init(
+    dsn="http://d132895bc251209f6157b645a9a32f59@host.docker.internal:9000/3",
+    send_default_pii=True,
+    debug=True,
+)
+
 # Настройка локализации
 LANGUAGE_CODE = "ru-ru"
 TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

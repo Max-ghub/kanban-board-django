@@ -1,4 +1,4 @@
-from debug_toolbar.toolbar import debug_toolbar_urls
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
@@ -27,6 +27,21 @@ urlpatterns = [
         name="schema-swagger-ui",
     ),
     path(
-        "api/redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
+        "api/redoc/",
+        schema_view.with_ui("redoc", cache_timeout=0),
+        name="schema-redoc",
     ),
-] + debug_toolbar_urls()
+    path("", include("django_prometheus.urls")),
+]
+
+# Подключаем Debug Toolbar только в DEBUG и если он установлен
+if settings.DEBUG:
+    try:
+        import debug_toolbar
+
+        urlpatterns += [
+            path("__debug__/", include(debug_toolbar.urls)),
+        ]
+    except ImportError:
+        # В окружении без debug_toolbar (например Celery) пропускаем подключение
+        pass

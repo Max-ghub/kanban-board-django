@@ -18,6 +18,9 @@ redis = ">=6.2.0,<7.0.0"
 drf-yasg = ">=1.21.10,<2.0.0"
 django-extra-settings = ">=0.14.0,<0.15.0"
 faker = ">=37.4.0,<38.0.0"
+django-cprofile-middleware = "^1.0.5"
+django-prometheus = "^2.4.1"
+sentry-sdk = {extras = ["django"], version = "^2.33.0"}
 
 [tool.poetry.group.dev.dependencies]
 django-debug-toolbar = "^5.1.0"
