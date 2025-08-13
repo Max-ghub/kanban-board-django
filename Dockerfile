@@ -1,21 +1,18 @@
-# 1) builder
 FROM python:3.12-slim AS builder
-RUN apt-get update && apt-get install -y libpq-dev
-RUN pip install poetry==1.8.0
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir poetry==1.8.0
 WORKDIR /app
 COPY pyproject.toml poetry.lock ./
-RUN poetry config virtualenvs.create false \
- && poetry install --no-dev --no-root
+RUN poetry export -f requirements.txt --output /tmp/requirements.txt --without-hashes
 
-# 2) final
 FROM python:3.12-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 WORKDIR /app
-
-# убираем компиляторы, оставляем только runtime зависимости
-RUN apt-get update && apt-get install -y libpq-dev
-
-# из билдера копируем ВСЁ из /usr/local: и библиотеки, и скрипты
-COPY --from=builder /usr/local /usr/local
-
-# копируем код
+RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /tmp/requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 COPY . .
+EXPOSE 8000
