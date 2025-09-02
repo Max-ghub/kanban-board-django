@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   backend:
     build:
@@ -6,7 +8,7 @@ services:
     container_name: kanban_board
     command: python manage.py runserver 0.0.0.0:8000
     environment:
-      - DJANGO_SETTINGS_MODULE=kanban_board.settings.main
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
@@ -46,7 +48,7 @@ services:
     container_name: celery
     command: celery -A kanban_board worker --loglevel=info
     environment:
-      - DJANGO_SETTINGS_MODULE=kanban_board.settings.main
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
