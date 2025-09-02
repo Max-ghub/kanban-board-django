@@ -131,13 +131,6 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
-# Sentry
-sentry_sdk.init(
-    dsn="http://d132895bc251209f6157b645a9a32f59@host.docker.internal:9000/3",
-    send_default_pii=True,
-    debug=True,
-)
-
 # Настройка локализации
 LANGUAGE_CODE = "ru-ru"
 TIME_ZONE = "Europe/Moscow"
