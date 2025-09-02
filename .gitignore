@@ -16,8 +16,7 @@ db.sqlite3
 media/z
 staticfiles/
 local_settings.py
-.env
-.env.staging
+.env*
 # VS Code
 .vscode/
 # PyCharm
