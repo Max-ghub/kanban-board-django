@@ -2,27 +2,36 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-import sentry_sdk
 from dotenv import load_dotenv
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv()
-SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = os.getenv("DEBUG") == "True"
-LOGIN_URL = "/login/"
-AUTH_USER_MODEL = "users.User"
 
-# Приложения
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+SECRET_KEY = os.getenv("SECRET_KEY", "change-me")
+DEBUG = False
+
+ALLOWED_HOSTS = [
+    h for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,backend").split(",") if h
+]
+
+AUTH_USER_MODEL = "users.User"
+LOGIN_URL = "/login/"
+
 INSTALLED_APPS = [
+    # Django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "core",
+    # 3rd party
     "rest_framework",
     "drf_yasg",
+    "django_prometheus",
+    # project apps
+    "core",
     "api",
     "users",
     "phone",
@@ -30,22 +39,10 @@ INSTALLED_APPS = [
     "notification",
     "notification_preferences",
     "extra_settings",
-    "django_prometheus",
 ]
 
-# Настройка PostgreSQL
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST", "localhost"),
-        "PORT": os.getenv("DB_PORT", "5432"),
-    }
-}
-
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -54,30 +51,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "core.middleware.MaintenanceModeMiddleware",
-    "django_cprofile_middleware.middleware.ProfilerMiddleware",
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
-# Настройка валидации пароля пользователя
-AUTH_PASSWORD_VALIDATORS = [
-    # {
-    #     "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    # },
-    # {
-    #     "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    # },
-    # {
-    #     "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    # },
-    # {
-    #     "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    # },
-]
-
-# Основные urls
 ROOT_URLCONF = "kanban_board.urls"
 
-# Шаблоны
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -93,6 +71,30 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = "kanban_board.wsgi.application"
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME", "kanban_board"),
+        "USER": os.getenv("DB_USER", "user"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "password"),
+        "HOST": os.getenv("DB_HOST", "db"),
+        "PORT": os.getenv("DB_PORT", "5432"),
+    }
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{os.getenv('REDIS_HOST','redis')}:{os.getenv('REDIS_PORT','6379')}/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "IGNORE_EXCEPTIONS": False,
+        },
+    }
+}
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
@@ -102,18 +104,6 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 5,
 }
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{os.getenv('REDIS_HOST', 'redis')}:{os.getenv('REDIS_PORT', '6379')}/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "IGNORE_EXCEPTIONS": False,
-        },
-    }
-}
-
-# Настройка SimpleJWT
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
@@ -121,24 +111,17 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
 }
 
-WSGI_APPLICATION = "kanban_board.wsgi.application"
-
-# Настройка Celery
 CELERY_BROKER_URL = (
-    f"redis://{os.getenv('REDIS_HOST', 'redis')}:{os.getenv('REDIS_PORT', '6379')}/0"
+    f"redis://{os.getenv('REDIS_HOST','redis')}:{os.getenv('REDIS_PORT','6379')}/0"
 )
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
-# Настройка локализации
-LANGUAGE_CODE = "ru-ru"
-TIME_ZONE = "Europe/Moscow"
+LANGUAGE_CODE = os.getenv("LANGUAGE_CODE", "ru-ru")
+TIME_ZONE = os.getenv("TIME_ZONE", "Europe/Moscow")
 USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")

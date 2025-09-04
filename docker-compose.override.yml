@@ -1,0 +1,48 @@
+services:
+  backend:
+    build:
+      args: { INSTALL_DEV: "false" }
+    env_file: [.env.prod]
+    command: gunicorn kanban_board.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    restart: unless-stopped
+    volumes:
+      - static-data:/app/staticfiles
+
+  celery:
+    build:
+      args: { INSTALL_DEV: "false" }
+    env_file: [.env.prod]
+    command: celery -A kanban_board worker --loglevel=info
+    restart: unless-stopped
+
+  db:
+    env_file: [.env.prod]
+    ports: []
+    restart: unless-stopped
+
+  redis:
+    ports: []
+    restart: unless-stopped
+
+  prometheus:
+    ports: []
+    restart: unless-stopped
+
+  grafana:
+    env_file: [.env.prod]
+    ports: []
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    depends_on: [backend]
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - static-data:/staticfiles:ro
+    restart: unless-stopped
+
+
+volumes:
+  static-data:

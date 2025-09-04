@@ -34,14 +34,7 @@ urlpatterns = [
     path("", include("django_prometheus.urls")),
 ]
 
-# Подключаем Debug Toolbar только в DEBUG и если он установлен
-if settings.DEBUG:
-    try:
-        import debug_toolbar
+if "debug_toolbar" in settings.INSTALLED_APPS:
+    import debug_toolbar
 
-        urlpatterns += [
-            path("__debug__/", include(debug_toolbar.urls)),
-        ]
-    except ImportError:
-        # В окружении без debug_toolbar (например Celery) пропускаем подключение
-        pass
+    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns

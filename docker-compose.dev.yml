@@ -1,0 +1,29 @@
+services:
+  backend:
+    build:
+      args: { INSTALL_DEV: "true" }
+    env_file: [.env]
+    command: ${RUN_COMMAND:-python manage.py runserver 0.0.0.0:8000}
+    entrypoint: ["sh", "docker/entrypoint.dev.sh"]
+    volumes:
+      - .:/app
+    ports: ["8000:8000"]
+
+  celery:
+    build:
+      args: { INSTALL_DEV: "true" }
+    env_file: [.env]
+    command: celery -A kanban_board worker --loglevel=info
+    entrypoint: ["sh", "docker/entrypoint.dev.sh"]
+    volumes:
+      - .:/app
+
+  db:
+    env_file: [.env]
+
+  grafana:
+    env_file: [.env]
+
+  prometheus:
+    volumes:
+      - ./prometheus.dev.yml:/opt/bitnami/prometheus/conf/prometheus.yml

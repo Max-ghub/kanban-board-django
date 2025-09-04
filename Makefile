@@ -1,11 +1,22 @@
-run:
-	python manage.py runserver
+# dev
+run-dev:
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up
 
-migrate:
-	python manage.py migrate
+run-dev-d:
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 
-migrations:
-	python manage.py makemigrations
+run-dev-build:
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
-shell:
-	python manage.py shell
+stop-dev:
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml down
+
+# prod
+run-prod:
+	docker compose up
+
+run-prod-d:
+	docker compose up -d
+
+stop-prod:
+	docker compose down
