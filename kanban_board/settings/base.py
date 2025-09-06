@@ -118,6 +118,34 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
+SWAGGER_SETTINGS = {
+    "USE_SESSION_AUTH": False,
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization",
+            "description": (
+                "JWT авторизация. "
+                "Передавайте токен в заголовке: "
+                "**Authorization: Bearer <токен>**"
+            ),
+        },
+        "Basic": {
+            "type": "basic",
+            "description": (
+                "Базовая авторизация по логину и паролю. "
+                "Заголовок будет вида: "
+                "**Authorization: Basic <base64(login:password)>**"
+            ),
+        },
+    },
+    "PERSIST_AUTH": DEBUG,
+    "OPERATIONS_SORTER": "alpha",
+    "TAGS_SORTER": "alpha",
+    "DOC_EXPANSION": "list",
+}
+
 LANGUAGE_CODE = os.getenv("LANGUAGE_CODE", "ru-ru")
 TIME_ZONE = os.getenv("TIME_ZONE", "Europe/Moscow")
 USE_I18N = True

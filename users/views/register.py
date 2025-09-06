@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
+from drf_yasg.utils import swagger_auto_schema
 from extra_settings.models import Setting
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -16,6 +18,9 @@ User = get_user_model()
 
 
 class RegisterUserView(APIView):
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(request_body=RegisterUserSerializer)
     def post(self, request):
         if Setting.get("OFF_REGISTER"):
             return JsonResponse(
@@ -29,6 +34,9 @@ class RegisterUserView(APIView):
 
 
 class RegisterVerifyUserView(APIView):
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(request_body=RegisterVerifyUserSerializer)
     def post(self, request):
         serializer = RegisterVerifyUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

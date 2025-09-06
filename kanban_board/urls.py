@@ -10,27 +10,26 @@ from .views import index_page
 schema_view = get_schema_view(
     openapi.Info(
         title="Kanban API",
-        default_version="Alfa",
-        description="API для регистрации, аутентификации и работы с пользователями",
+        default_version="v1",
+        description="API для регистрации, аутентификации, работы с пользователями и канбан доской",
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [
+    # API
     path("", index_page),
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
+    # Swagger
     path(
-        "api/docs/",
+        "swagger/",
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
-    path(
-        "api/redoc/",
-        schema_view.with_ui("redoc", cache_timeout=0),
-        name="schema-redoc",
-    ),
+    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    # Prometheus
     path("", include("django_prometheus.urls")),
 ]
 
