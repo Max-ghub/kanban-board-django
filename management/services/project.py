@@ -1,27 +1,24 @@
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import get_object_or_404
 
 from management.models import Project
 from users.models import User
 
 
-class ProjectMemberService:
+class ProjectService:
     @staticmethod
-    def add_member(project: Project, user_id: int) -> Project:
-        user = get_object_or_404(User, pk=user_id)
+    def add_member(project: Project, user: User) -> Project:
         if project.members.filter(pk=user.pk).exists():
-            raise ValidationError({"user_id": "Пользователь уже состоит в проекте"})
+            raise ValidationError({"user": "Пользователь уже состоит в проекте"})
         project.members.add(user)
         return project
 
     @staticmethod
-    def delete_member(project: Project, user_id: int) -> Project:
-        user = get_object_or_404(User, pk=user_id)
+    def delete_member(project: Project, user: User) -> Project:
         if not project.members.filter(pk=user.pk).exists():
             raise ValidationError(
-                {"user_id": "Пользователь не является участником проекта"}
+                {"user": "Пользователь не является участником проекта"}
             )
         if user.pk == project.owner_id:
-            raise ValidationError({"user_id": "Пользователь является владельцем"})
+            raise ValidationError({"user": "Пользователь является владельцем"})
         project.members.remove(user)
         return project
