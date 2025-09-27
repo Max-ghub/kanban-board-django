@@ -3,5 +3,5 @@ from django.urls import path
 from notification_preferences.views import NotificationPreferencesView
 
 urlpatterns = [
-    path("", NotificationPreferencesView.as_view()),
+    path("notification-preferences/", NotificationPreferencesView.as_view()),
 ]
