@@ -1,8 +1,10 @@
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from management.models import Task
+from management.premissions import IsProjectMemberOrOwner, IsProjectOwner
 from management.serializes.task import (
     TaskAssigneeSerializer,
     TaskModelSerializer,
@@ -15,8 +17,14 @@ from management.services.task import TaskService
 class TaskViewSet(ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskModelSerializer
+    permission_classes = [IsAuthenticated, IsProjectMemberOrOwner]
 
-    @action(detail=True, methods=["post"], url_path="move")
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="move",
+        permission_classes=[IsProjectOwner],
+    )
     def move_task(self, request, pk=None):
         task = self.get_object()
         serializer = TaskMoveSerializer(data=request.data)
@@ -27,7 +35,12 @@ class TaskViewSet(ModelViewSet):
 
         return Response(data={"message": "Задача перемещена"}, status=200)
 
-    @action(detail=True, methods=["post"], url_path="assign")
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="assign",
+        permission_classes=[IsProjectOwner],
+    )
     def set_assignee(self, request, pk=None):
         task = self.get_object()
         serializer = TaskAssigneeSerializer(data=request.data)
@@ -41,7 +54,12 @@ class TaskViewSet(ModelViewSet):
         )
         return Response(data={"message": message}, status=200)
 
-    @action(detail=True, methods=["post"], url_path="subtasks")
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="subtasks",
+        permission_classes=[IsProjectOwner],
+    )
     def create_subtask(self, request, pk=None):
         parent_task = self.get_object()
 

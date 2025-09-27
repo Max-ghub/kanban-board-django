@@ -17,7 +17,7 @@ class Project(BaseManagementModel):
     objects = models.Manager()
 
     def __str__(self):
-        return self.title
+        return self.title + f" ({self.pk})"
 
     class Meta:
         db_table = "management_projects"
