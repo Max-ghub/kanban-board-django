@@ -31,6 +31,19 @@ class TaskAssigneeSerializer(serializers.Serializer):
 
 
 class TaskSubtaskSerializer(TaskModelSerializer):
+    def validate(self, attrs):
+        parent_task = self.context.get("parent_task")
+        view = self.context.get("view")
+
+        if parent_task is not None and view is not None:
+            view._validate_relations(
+                column=parent_task.column,
+                parent=parent_task,
+                assignee=attrs.get("assignee"),
+            )
+
+        return super().validate(attrs)
+
     class Meta(TaskModelSerializer.Meta):
         extra_kwargs = {
             "column": {"read_only": True},

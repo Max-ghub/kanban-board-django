@@ -129,7 +129,13 @@ class TaskViewSet(ModelViewSet):
         parent_task = self.get_object()
 
         serializer = TaskSubtaskSerializer(
-            data=request.data, context={"parent_task": parent_task}
+            data=request.data, context={"parent_task": parent_task, "view": self}
+        )
+        serializer.is_valid(raise_exception=True)
+        self._validate_relations(
+            column=parent_task.column,
+            parent=parent_task,
+            assignee=serializer.validated_data.get("assignee"),
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
