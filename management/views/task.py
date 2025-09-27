@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from management.models import Task
-from management.premissions import IsProjectMemberOrOwner, IsProjectOwner
+from management.premissions import IsProjectMember
 from management.serializes.task import (
     TaskAssigneeSerializer,
     TaskModelSerializer,
@@ -19,7 +19,7 @@ from management.services.task import TaskService
 
 class TaskViewSet(ModelViewSet):
     serializer_class = TaskModelSerializer
-    permission_classes = [IsAuthenticated, IsProjectMemberOrOwner]
+    permission_classes = [IsAuthenticated, IsProjectMember]
 
     def get_queryset(self):
         user = self.request.user
@@ -88,7 +88,7 @@ class TaskViewSet(ModelViewSet):
         detail=True,
         methods=["post"],
         url_path="move",
-        permission_classes=[IsProjectOwner],
+        permission_classes=[IsAuthenticated, IsProjectMember],
     )
     def move_task(self, request, pk=None):
         task = self.get_object()
@@ -104,7 +104,7 @@ class TaskViewSet(ModelViewSet):
         detail=True,
         methods=["post"],
         url_path="assign",
-        permission_classes=[IsProjectOwner],
+        permission_classes=[IsAuthenticated, IsProjectMember],
     )
     def set_assignee(self, request, pk=None):
         task = self.get_object()
@@ -123,7 +123,7 @@ class TaskViewSet(ModelViewSet):
         detail=True,
         methods=["post"],
         url_path="subtasks",
-        permission_classes=[IsProjectOwner],
+        permission_classes=[IsAuthenticated, IsProjectMember],
     )
     def create_subtask(self, request, pk=None):
         parent_task = self.get_object()
