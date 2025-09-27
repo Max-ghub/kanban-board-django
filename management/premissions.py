@@ -37,3 +37,19 @@ class IsProjectOwner(BasePermission):
 
         user = request.user
         return project.owner == user
+
+
+class IsProjectMember(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        project = _resolve_project(obj)
+        if project is None:
+            return False
+
+        user = request.user
+        if not user.is_authenticated:
+            return False
+
+        if project.owner_id == user.pk:
+            return True
+
+        return project.members.filter(pk=user.pk).exists()
