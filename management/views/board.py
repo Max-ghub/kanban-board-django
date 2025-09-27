@@ -1,4 +1,5 @@
 from django.db.models import Q
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
@@ -17,3 +18,14 @@ class BoardViewSet(ModelViewSet):
         return Board.objects.filter(
             Q(project__owner=user) | Q(project__members=user)
         ).distinct()
+
+    def perform_create(self, serializer):
+        project = serializer.validated_data["project"]
+        user = self.request.user
+
+        if project.owner != user and not project.members.filter(pk=user.pk).exists():
+            raise PermissionDenied(
+                "Недостаточно прав, чтобы добавлять доску в этот проект."
+            )
+
+        serializer.save()
