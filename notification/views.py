@@ -17,8 +17,10 @@ class NotificationView(views.APIView):
 
     def get(self, request):
         user = request.user
+        notification_settings, _ = NotificationSettings.objects.get_or_create(user=user)
+        print(_)
         notifications = user.notifications.all()
-        if user.notification_settings.show_unread_only:
+        if notification_settings.show_unread_only:
             notifications = notifications.filter(is_read=False)
         serializer = NotificationSerializer(notifications, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -52,13 +54,17 @@ class NotificationSettingsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        notification_settings = NotificationSettings.objects.get(user=request.user)
+        notification_settings, _ = NotificationSettings.objects.get_or_create(
+            user=request.user
+        )
         serializer = NotificationSettingsSerializer(notification_settings)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(request_body=NotificationSettingsSerializer)
     def put(self, request):
-        notification_settings = NotificationSettings.objects.get(user=request.user)
+        notification_settings, _ = NotificationSettings.objects.get_or_create(
+            user=request.user
+        )
         serializer = NotificationSettingsSerializer(
             notification_settings, data=request.data
         )

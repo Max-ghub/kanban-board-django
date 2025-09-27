@@ -10,4 +10,7 @@ class NotificationPreferencesView(RetrieveUpdateAPIView):
     serializer_class = NotificationPreferencesSerializer
 
     def get_object(self):
-        return NotificationPreferences.objects.get(user=self.request.user)
+        notification_preferences, _ = NotificationPreferences.objects.get_or_create(
+            user=self.request.user
+        )
+        return notification_preferences
