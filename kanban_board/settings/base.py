@@ -131,14 +131,6 @@ SWAGGER_SETTINGS = {
                 "**Authorization: Bearer <токен>**"
             ),
         },
-        "Basic": {
-            "type": "basic",
-            "description": (
-                "Базовая авторизация по логину и паролю. "
-                "Заголовок будет вида: "
-                "**Authorization: Basic <base64(login:password)>**"
-            ),
-        },
     },
     "PERSIST_AUTH": DEBUG,
     "OPERATIONS_SORTER": "alpha",
@@ -152,4 +144,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

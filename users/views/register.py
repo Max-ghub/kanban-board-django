@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
+from django.shortcuts import render
 from drf_yasg.utils import swagger_auto_schema
 from extra_settings.models import Setting
 from rest_framework import status
@@ -19,6 +20,9 @@ User = get_user_model()
 
 class RegisterUserView(APIView):
     permission_classes = [AllowAny]
+
+    def get(self, request):
+        return render(request, "register.html")
 
     @swagger_auto_schema(request_body=RegisterUserSerializer)
     def post(self, request):

@@ -18,18 +18,22 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    # API
     path("", index_page),
-    path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
-    # Swagger
+    path("", include("users.urls")),
+    path("admin/", admin.site.urls),
+]
+# Swagger
+urlpatterns += [
     path(
         "swagger/",
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
-    # Prometheus
+]
+# Prometheus
+urlpatterns += [
     path("", include("django_prometheus.urls")),
 ]
 
