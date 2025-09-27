@@ -22,4 +22,5 @@ class BoardModelSerializer(ModelSerializer):
 
     class Meta:
         model = Board
-        fields = ["title", "project", "updated_at", "created_at"]
+        fields = ["id", "title", "project", "updated_at", "created_at"]
+        read_only_fields = ["id"]
