@@ -7,8 +7,8 @@ from notification.views import (
 )
 
 urlpatterns = [
-    path("", NotificationView.as_view()),
-    path("<int:notification_id>/", NotificationView.as_view()),
-    path("<int:notification_id>/read/", NotificationReadView.as_view()),
-    path("settings/", NotificationSettingsView.as_view()),
+    path("notifications/", NotificationView.as_view()),
+    path("notifications/<int:notification_id>/", NotificationView.as_view()),
+    path("notifications/<int:notification_id>/read/", NotificationReadView.as_view()),
+    path("notifications/settings/", NotificationSettingsView.as_view()),
 ]

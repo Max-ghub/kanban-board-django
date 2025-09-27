@@ -9,8 +9,9 @@ class MaintenanceModeMiddleware:
 
     def __call__(self, request):
         if Setting.get("MAINTENANCE_MODE", False):
-            if not request.path.startswith("/admin/") or request.path.startswith(
-                "/static/"
+            if not (
+                request.path.startswith("/admin/")
+                or request.path.startswith("/static/")
             ):
                 return HttpResponse(
                     "Идут технические работы",

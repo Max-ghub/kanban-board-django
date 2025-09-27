@@ -4,7 +4,7 @@ from management.models import Board, Column
 
 
 class ColumnModelSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(max_length=128)
+    title = serializers.CharField(max_length=64)
 
     class Meta:
         model = Column
