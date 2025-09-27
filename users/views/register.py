@@ -34,7 +34,7 @@ class RegisterUserView(APIView):
         serializer = RegisterUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"message": "Код отправлен"}, status=status.HTTP_200_OK)
+        return Response({"message": "Код успешно отправлен"}, status=status.HTTP_200_OK)
 
 
 class RegisterVerifyUserView(APIView):

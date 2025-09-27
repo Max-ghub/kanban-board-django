@@ -38,14 +38,12 @@ class RegisterVerifyUserSerializer(serializers.Serializer):
 
         if phone_code.created_at < timezone.now() - CODE_TTL:
             phone_code.delete()
-            raise serializers.ValidationError(
-                {"error": "Код просрочен. Запросите новый"}
-            )
+            raise serializers.ValidationError({"error": "Код просрочен"})
 
         if phone_code.attempts >= MAX_SEND_CODE_ATTEMPTS:
             phone_code.delete()
             raise serializers.ValidationError(
-                {"error": "Превышено количество попыток. Код удалён"}
+                {"error": "Превышено количество попыток ввода кода"}
             )
 
         if code != phone_code.code:
