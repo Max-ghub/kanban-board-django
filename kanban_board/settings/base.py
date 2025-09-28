@@ -12,14 +12,16 @@ SECRET_KEY = os.getenv("SECRET_KEY", "change-me")
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    h for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,backend").split(",") if h
+    host
+    for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,backend").split(",")
+    if host
 ]
 
 AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "/login/"
 
 INSTALLED_APPS = [
-    # Django
+    # django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -96,10 +98,25 @@ CACHES = {
 }
 
 REST_FRAMEWORK = {
+    # Auth
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    # Throttling
+    "DEFAULT_THROTTLE_CLASSES": [
+        "core.throttling.SlowUserRateThrottle",
+        "core.throttling.SlowAnonRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "user": "30/min",
+        "anon": "15/min",
+        "auth": "5/15m",
+        "authRefresh": "30/hour",
+        "register": "3/10m",
+        "registerVerify": "5/15m",
+    },
+    # Pagination
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 5,
 }

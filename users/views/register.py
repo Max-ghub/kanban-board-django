@@ -6,8 +6,10 @@ from extra_settings.models import Setting
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
+from core.throttling import RegisterThrottle
 from core.utils.jwt import generate_tokens
 from users.serializers.register import (
     RegisterUserSerializer,
@@ -20,6 +22,7 @@ User = get_user_model()
 
 class RegisterUserView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [RegisterThrottle]
 
     def get(self, request):
         return render(request, "register.html")
@@ -39,6 +42,8 @@ class RegisterUserView(APIView):
 
 class RegisterVerifyUserView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "registerVerify"
 
     @swagger_auto_schema(request_body=RegisterVerifyUserSerializer)
     def post(self, request):
