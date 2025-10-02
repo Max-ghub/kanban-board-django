@@ -7,7 +7,7 @@ from users.models import User
 from users.serializers.user import UserSerializer
 
 
-@method_decorator(cache_response(timeout=60), name="list")
+@method_decorator(cache_response(ttl=60), name="list")
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer

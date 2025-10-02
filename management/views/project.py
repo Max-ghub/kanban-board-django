@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models import Q
+from django.utils.decorators import method_decorator
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -7,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from core.utils.cache import cache_response
 from management.models import Project
 from management.premissions import IsProjectMemberOrOwner, IsProjectOwner
 from management.serializes.project import ProjectMemberSerializer, ProjectSerializer
@@ -19,6 +21,7 @@ class ProjectPagination(PageNumberPagination):
     max_page_size = 10
 
 
+@method_decorator(cache_response(ttl=5), name="list")
 class ProjectViewSet(ModelViewSet):
     serializer_class = ProjectSerializer
     pagination_class = ProjectPagination

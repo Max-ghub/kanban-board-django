@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.utils.decorators import method_decorator
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
@@ -6,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from core.utils.cache import cache_response
 from management.models import Task
 from management.premissions import IsProjectMember
 from management.serializes.task import (
@@ -17,6 +19,7 @@ from management.serializes.task import (
 from management.services.task import TaskService
 
 
+@method_decorator(cache_response(ttl=60), name="list")
 class TaskViewSet(ModelViewSet):
     serializer_class = TaskModelSerializer
     permission_classes = [IsAuthenticated, IsProjectMember]

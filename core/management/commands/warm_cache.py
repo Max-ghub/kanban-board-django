@@ -1,18 +1,24 @@
-import requests
+from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.test import Client
 
-CACHE_WARM_URLS = [
-    "http://127.0.0.1:8000/api/users/",
+URLS = [
+    "/api/v1/users/",
 ]
 
 
 class Command(BaseCommand):
-    help = "Прогревает кэш для популярных эндпоинтов"
+    help = "Warm cache"
 
     def handle(self, *args, **kwargs):
-        for url in CACHE_WARM_URLS:
-            try:
-                response = requests.get(url, headers={"Accept": "application/json"})
-                self.stdout.write(f"[{response.status_code}]")
-            except Exception as e:
-                self.stdout.write(f"Ошибка при запросе {url}: {e}")
+        if "localhost" not in settings.ALLOWED_HOSTS:
+            settings.ALLOWED_HOSTS = list(settings.ALLOWED_HOSTS) + ["localhost"]
+
+        client = Client()
+        for url in URLS:
+            resp = client.get(
+                url,
+                HTTP_HOST="localhost",  # явно задаём хост
+                HTTP_ACCEPT="application/json",
+            )
+            self.stdout.write(f"{url}: {resp.status_code}")

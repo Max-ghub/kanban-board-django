@@ -1,13 +1,16 @@
 from django.db.models import Q
+from django.utils.decorators import method_decorator
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
+from core.utils.cache import cache_response
 from management.models import Board
 from management.premissions import IsProjectMemberOrOwner
 from management.serializes.board import BoardModelSerializer
 
 
+@method_decorator(cache_response(ttl=60), name="list")
 class BoardViewSet(ModelViewSet):
     queryset = Board.objects.all()
     serializer_class = BoardModelSerializer
