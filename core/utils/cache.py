@@ -5,8 +5,8 @@ from django.http import HttpResponse
 from rest_framework.response import Response
 
 
-def _build_cache_key(request):
-    return f"response-cache:{request.get_full_path()}"
+def _build_cache_key(request, user_identifier):
+    return f"response-cache:{user_identifier}:{request.get_full_path()}"
 
 
 def _restore_response(payload):
@@ -32,7 +32,12 @@ def cache_response(ttl=60):
             if method != "GET":
                 return view_func(self_or_request, *args, **kwargs)
 
-            cache_key = _build_cache_key(request)
+            user = getattr(request, "user", None)
+            if not getattr(user, "is_authenticated", False):
+                return view_func(self_or_request, *args, **kwargs)
+            user_identifier = f"user-{user.pk}"
+
+            cache_key = _build_cache_key(request, user_identifier)
             cached_payload = cache.get(cache_key)
             if cached_payload is not None:
                 return _restore_response(cached_payload)
