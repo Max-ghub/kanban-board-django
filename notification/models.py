@@ -1,4 +1,6 @@
+from django.contrib.postgres.indexes import BrinIndex
 from django.db import models
+from django.db.models import Q
 
 
 class NotificationSettings(models.Model):
@@ -54,6 +56,17 @@ class Notification(models.Model):
         ordering = ["-created_at"]
         verbose_name = "Уведомление"
         verbose_name_plural = "Уведомления"
+        indexes = [
+            BrinIndex(fields=["created_at"], name="idx_notification_created_brin"),
+            models.Index(
+                fields=["user", "created_at"], name="idx_notification_user_created"
+            ),
+            models.Index(
+                fields=["user", "created_at"],
+                name="idx_notification_unread",
+                condition=Q(is_read=False),
+            ),
+        ]
 
     objects = models.Manager()
 

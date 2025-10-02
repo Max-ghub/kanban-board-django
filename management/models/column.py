@@ -19,3 +19,6 @@ class Column(BaseManagementModel):
         verbose_name = "Колонка"
         verbose_name_plural = "Колонки"
         ordering = ["order"]
+        indexes = [
+            models.Index(fields=["board", "order"], name="idx_column_board_order"),
+        ]

@@ -18,7 +18,6 @@ class NotificationView(views.APIView):
     def get(self, request):
         user = request.user
         notification_settings, _ = NotificationSettings.objects.get_or_create(user=user)
-        print(_)
         notifications = user.notifications.all()
         if notification_settings.show_unread_only:
             notifications = notifications.filter(is_read=False)

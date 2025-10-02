@@ -55,3 +55,12 @@ class Task(BaseManagementModel):
         db_table = "management_tasks"
         verbose_name = "Задача"
         verbose_name_plural = "Задачи"
+        indexes = [
+            models.Index(
+                fields=["column", "status", "priority"], name="idx_task_col_stat_prio"
+            ),
+            models.Index(
+                fields=["assignee", "status"], name="idx_task_assignee_status"
+            ),
+            models.Index(fields=["parent"], name="idx_task_parent"),
+        ]
